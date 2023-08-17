@@ -1,2 +1,2 @@
 # FinanceWebsite
-A basic website that uses the Commonwealth Bank API to parse and present your financial transactions in a pleasing way
+A basic website that uses the Commonwealth Bank API to parse and present your financial transactions
