@@ -82,26 +82,30 @@ def parse_transactions(transactions):
     return categories
 
 def is_gym(transaction: Transaction) -> bool:
-    potential_strings = ["gym", "desrenford"]
-    return any(s in transaction.transaction_name.lower() for s in potential_strings)
+    keywords = ["gym", "desrenford"]
+    return is_matching(keywords, transaction)
 
 def is_groceries(transaction: Transaction) -> bool:
-    potential_strings = ["iga", "woolworths", "coles"]
-    return any(s in transaction.transaction_name.lower() for s in potential_strings)
+    keywords = ["iga", "woolworths", "coles"]
+    return is_matching(keywords, transaction)
 
 def is_income(transaction: Transaction) -> bool:
     return transaction.amount > 0
 
 def is_eating_out(transaction: Transaction) -> bool:
-    potential_strings = ["zambrero", "mcdonalds", "dominos", "guzman", "boost juice", "mad mex", "subway", "kfc", "sharetea", "chatime"]
-    return any(s in transaction.transaction_name.lower() for s in potential_strings)
+    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "boost juice", "mad mex", "subway", "kfc", "sharetea", "chatime"]
+    return is_matching(keywords, transaction)
 
 def is_transport(transaction: Transaction) -> bool:
-    potential_strings = ["transport"]
-    return any(s in transaction.transaction_name.lower() for s in potential_strings)
+    keywords = ["transport"]
+    return is_matching(keywords, transaction)
 
 def is_rent(transaction: Transaction) -> bool:
     return transaction.amount < -150 and "unswrandwick" in transaction.transaction_name.replace(" ","").lower()
+
+def is_matching(keywords: list, transaction: Transaction) -> bool:
+    re_pattern = "|".join(map(re.escape, keywords))
+    return re.search(re_pattern, transaction.transaction_name, re.IGNORECASE) is not None
 
 def format_transaction(transaction: Transaction):
     date_match = re.search(r'([0-9]{2}/[0-9]{2}/[0-9]{4})$', transaction.transaction_name)
