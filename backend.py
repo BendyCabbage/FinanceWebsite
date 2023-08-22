@@ -1,5 +1,5 @@
 
-import csv, re
+import csv, re, os
 from dataclasses import dataclass
 from datetime import date
 
@@ -14,15 +14,23 @@ class Transaction:
     balance: float
 
 
-def main():
-    transactions = parse_csv("transactions.csv")
+def main(transaction_filename):
+    transactions = parse_csv(transaction_filename)
     categories = parse_transactions(transactions)
 
     summary = create_summary(categories)
-    write_to_file(summary, output_file)
+
+    summary_filename = "summary_" + get_basename(transaction_filename) + ".txt"
+    trans_filename = "transactions_" + get_basename(transaction_filename) + ".txt"
+
+    write_to_file(summary, summary_filename)
 
     transaction_string = create_transactions_string(categories)
-    write_to_file(transaction_string, transaction_output)
+    write_to_file(transaction_string, trans_filename)
+
+def get_basename(filename):
+    basename = os.path.basename(filename)
+    return basename.split(".")[0]
 
 def parse_csv(csv_file):
     try:
@@ -114,15 +122,31 @@ def format_transaction(transaction: Transaction):
     return transaction
 
 def create_summary(categories) -> str:
-    summary_string = "Summary:\n"
+    summary_string = ""
+
+    total_profit_loss = 0
+    min_date = date(2999, 12, 30)
+    max_date = date(1901, 1, 1)
 
     for category in categories:
         summary_string += category + ":\n"
         category_sum = round(sum([i.amount for i in categories[category]]),2)
+
+        start_date = min([i.date for i in categories[category]])
+        end_date = max([i.date for i in categories[category]])
+
+        min_date = min(start_date, min_date)
+        max_date = max(end_date, max_date)
+
+        total_profit_loss += category_sum
+
         num_transactions = len(categories[category])
         summary_string += f"\t{format_amount(category_sum)}\n"
 
         summary_string += f"\tNumber of Transactions: {num_transactions}\n\n"
+    start_summary = f"Summary:\nPeriod: {date_to_str(min_date)} - {date_to_str(max_date)}\nTotal profit/loss: {format_amount(total_profit_loss)}\n"
+    summary_string = start_summary + summary_string
+
 
     return summary_string
 
@@ -152,4 +176,4 @@ def write_to_file(contents, filename):
         file.write(contents)
 
 if __name__ == "__main__":
-    main()
+    main("transactions.csv")
