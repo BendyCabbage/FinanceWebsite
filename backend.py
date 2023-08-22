@@ -16,7 +16,7 @@ class Transaction:
 
 def main(transaction_filename):
     transactions = parse_csv(transaction_filename)
-    categories = parse_transactions(transactions)
+    categories = categorise_transactions(transactions)
 
     summary = create_summary(categories)
 
@@ -61,8 +61,8 @@ def parse_date(date_string: str) -> date:
     day, month, year = date_string.split("/")
     return date(int(year), int(month), int(day))
 
-def parse_transactions(transactions):
-    categories = {"gym": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": []}
+def categorise_transactions(transactions):
+    categories = {"utilities": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": [], "recurring": []}
 
     for i in transactions:
         if is_income(i):
@@ -71,8 +71,8 @@ def parse_transactions(transactions):
             categories["transport"].append(i)
         elif is_groceries(i):
             categories["groceries"].append(i)
-        elif is_gym(i):
-            categories["gym"].append(i)
+        elif is_utilities(i):
+            categories["utilities"].append(i)
         elif is_rent(i):
             categories["rent"].append(i)
         elif is_eating_out(i):
@@ -81,19 +81,20 @@ def parse_transactions(transactions):
             categories["miscellaneous"].append(i)
     return categories
 
-def is_gym(transaction: Transaction) -> bool:
-    keywords = ["gym", "desrenford"]
+def is_utilities(transaction: Transaction) -> bool:
+    keywords = ["gym", "desrenford", "spotify", "circles.life", "unsw village"]
     return is_matching(keywords, transaction)
 
 def is_groceries(transaction: Transaction) -> bool:
-    keywords = ["iga", "woolworths", "coles"]
+    keywords = ["iga", "woolworths", "coles", "aldi"]
     return is_matching(keywords, transaction)
 
 def is_income(transaction: Transaction) -> bool:
     return transaction.amount > 0
 
 def is_eating_out(transaction: Transaction) -> bool:
-    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "boost juice", "mad mex", "subway", "kfc", "sharetea", "chatime"]
+    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "cafe", "burger", "boost juice", "mad mex", "subway", "kfc", 
+                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme"]
     return is_matching(keywords, transaction)
 
 def is_transport(transaction: Transaction) -> bool:
@@ -101,7 +102,8 @@ def is_transport(transaction: Transaction) -> bool:
     return is_matching(keywords, transaction)
 
 def is_rent(transaction: Transaction) -> bool:
-    return transaction.amount < -150 and "unswrandwick" in transaction.transaction_name.replace(" ","").lower()
+    keywords = ["unsw randwick"]
+    return transaction.amount < -150 and is_matching(keywords, transaction)
 
 def is_matching(keywords: list, transaction: Transaction) -> bool:
     re_pattern = "|".join(map(re.escape, keywords))
@@ -117,8 +119,8 @@ def format_transaction(transaction: Transaction):
     name = re.sub(r'( [A-Z]{2} )?[A-Z]{3} Card.*', r'', name) #Removes card references
     name = re.sub(r'( |^)[0-9]{4,}( |$)', ' ', name) # Removes 4 or more consecutive numbers
     name = re.sub(r' PTY LTD( |$)', ' ', name) #Removes PTY LTD
-    name = re.sub(r'\b(?=\w*\d)(?=\w*[a-zA-Z])\w+\b', '', name) #Removes words containing both letters and numbers
-    name = re.sub(r' \b(?=\w*[A-Z][A-Z]\w*[a-z])\w+\b ', ' ', name) #Removes mixed case words with capital letters not at the start
+    name = re.sub(r'[\b\_](?=\w*\d)(?=\w*[a-zA-Z])\w+[\b\_]', '', name) #Removes words containing both letters and numbers
+    name = re.sub(r' [\b\_](?=\w*[A-Z][A-Z]\w*[a-z])\w+[\b\_] ', ' ', name) #Removes mixed case words with capital letters not at the start
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
 
@@ -133,6 +135,8 @@ def create_summary(categories) -> str:
     max_date = date(1901, 1, 1)
 
     for category in categories:
+        if len(categories[category]) == 0:
+            continue
         summary_string += category + ":\n"
         category_sum = round(sum([i.amount for i in categories[category]]),2)
 
@@ -155,6 +159,7 @@ def create_summary(categories) -> str:
     return summary_string
 
 def format_amount(amount):
+    amount = round(amount, 2)
     if amount < 0:
         return  f"-${-amount}"
     else:
@@ -180,4 +185,5 @@ def write_to_file(contents, filename):
         file.write(contents)
 
 if __name__ == "__main__":
-    main("transactions.csv")
+    filename = input("Enter the transactions filename: ")
+    main(filename)
