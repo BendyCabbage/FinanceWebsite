@@ -62,7 +62,7 @@ def parse_date(date_string: str) -> date:
     return date(int(year), int(month), int(day))
 
 def categorise_transactions(transactions):
-    categories = {"utilities": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": [], "recurring": []}
+    categories = {"utilities": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": []}
 
     for i in transactions:
         if is_income(i):
@@ -93,8 +93,8 @@ def is_income(transaction: Transaction) -> bool:
     return transaction.amount > 0
 
 def is_eating_out(transaction: Transaction) -> bool:
-    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "cafe", "burger", "boost juice", "mad mex", "subway", "kfc", 
-                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme"]
+    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "cafe", "burger", "boost", "mad mex", "subway", "kfc",
+                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme", "food"]
     return is_matching(keywords, transaction)
 
 def is_transport(transaction: Transaction) -> bool:
@@ -114,18 +114,19 @@ def format_transaction(transaction: Transaction):
     if date_match:
         transaction.date = parse_date(date_match.group(1))
 
-    name = transaction.transaction_name
+    transaction.transaction_name = format_name(transaction.transaction_name)
+    return transaction
 
-    name = re.sub(r'( [A-Z]{2} )?[A-Z]{3} Card.*', r'', name) #Removes card references
-    name = re.sub(r'( |^)[0-9]{4,}( |$)', ' ', name) # Removes 4 or more consecutive numbers
-    name = re.sub(r' PTY LTD( |$)', ' ', name) #Removes PTY LTD
-    name = re.sub(r'[\b\_](?=\w*\d)(?=\w*[a-zA-Z])\w+[\b\_]', '', name) #Removes words containing both letters and numbers
-    name = re.sub(r' [\b\_](?=\w*[A-Z][A-Z]\w*[a-z])\w+[\b\_] ', ' ', name) #Removes mixed case words with capital letters not at the start
+def format_name(name: str) ->str:
+    name = re.sub(r'( [A-Z]{2})?( [A-Z]{3})?( Card xx\d{4})?( [A-Z]{3} \d+.\d+)? Value Date.*', r'', name) #Removes card references
+    name = re.sub(r' ([A-Z]*\d+[A-Z]*)+ ', ' ', name) # Removes words containing only letters or full caps + letters
+    name = re.sub(r' ((AU)?(NS)? AUS|TAP|PTY LTD)( |$)', ' ', name) #Removes PTY LTD, AUS, TAP and AU/NS
+    #name = re.sub(r'[\b\_](?=\w*\d)(?=\w*[a-zA-Z])\w+[\b\_]', '', name) #Removes words containing both letters and numbers
+    #name = re.sub(r' [\b\_](?=\w*[A-Z][A-Z]\w*[a-z])\w+[\b\_] ', ' ', name) #Removes mixed case words with capital letters not at the start
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
+    return name.strip()
 
-    transaction.transaction_name = name
-    return transaction
 
 def create_summary(categories) -> str:
     summary_string = ""
