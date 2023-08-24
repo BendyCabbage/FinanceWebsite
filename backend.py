@@ -94,7 +94,7 @@ def is_income(transaction: Transaction) -> bool:
 
 def is_eating_out(transaction: Transaction) -> bool:
     keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "cafe", "burger", "boost", "mad mex", "subway", "kfc",
-                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme", "food"]
+                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme", "food, hungry jacks"]
     return is_matching(keywords, transaction)
 
 def is_transport(transaction: Transaction) -> bool:
@@ -119,14 +119,11 @@ def format_transaction(transaction: Transaction):
 
 def format_name(name: str) ->str:
     name = re.sub(r'( [A-Z]{2})?( [A-Z]{3})?( Card xx\d{4})?( [A-Z]{3} \d+.\d+)? Value Date.*', r'', name) #Removes card references
-    name = re.sub(r' ([A-Z]*\d+[A-Z]*)+ ', ' ', name) # Removes words containing only letters or full caps + letters
-    name = re.sub(r' ((AU)?(NS)? AUS|TAP|PTY LTD)( |$)', ' ', name) #Removes PTY LTD, AUS, TAP and AU/NS
-    #name = re.sub(r'[\b\_](?=\w*\d)(?=\w*[a-zA-Z])\w+[\b\_]', '', name) #Removes words containing both letters and numbers
-    #name = re.sub(r' [\b\_](?=\w*[A-Z][A-Z]\w*[a-z])\w+[\b\_] ', ' ', name) #Removes mixed case words with capital letters not at the start
+    name = re.sub(r' ([A-Z]*\d+[A-Z]*)+ ', ' ', name) # Removes words containing only numbers or full caps + numbers
+    name = re.sub(r'TAP|PTY LTD)( |$)', '', name) #Removes PTY LTD and TAP
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
     return name.strip()
-
 
 def create_summary(categories) -> str:
     summary_string = ""
