@@ -1,0 +1,36 @@
+* {
+  border: 0px;
+  margin: 0px;
+}
+
+.primary-text {
+  color: #eff2f6;
+}
+
+.secondary-text {
+  color: #8a94ad;
+}
+
+.primary-background {
+  background-color: #0f111a;
+}
+
+.secondary-background {
+  background-color: #141824;
+}
+
+.light-blue {
+  color: #85a9ff;
+}
+
+.medium-blue {
+  color: #7493e0;
+}
+
+.dark-blue {
+  color: #252d44;
+}
+
+.border {
+  border: 1px solid #2f3549;
+}
