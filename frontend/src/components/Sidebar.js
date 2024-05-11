@@ -1,8 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
 import { headerHeight } from './Header';
+
+// Icons
+import homeIcon from '../icons/homeIcon.svg';
+import clockIcon from '../icons/clockIcon.svg';
+import uploadIcon from '../icons/uploadIcon.svg';
+import spendingIcon from '../icons/spendingIcon.svg';
 
 export const sidebarWidth = 250;
 
@@ -24,22 +30,28 @@ const Nav = styled.nav`
   flex-direction: row;
   flex-wrap:  wrap;
   align-items: center;
-  margin-right: 15px;
 
   overflow-y: scroll;
 `;
 
-const SidebarIcon = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+const SidebarIcon = styled.img`
+  color: #8a94ad;
+  fill: #8a94ad;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 `;
 
-const SidebarItem = styled.a`
+const SidebarHolder = styled.div`
   cursor: pointer;
-  margin-left: 15px;
-  margin-top: 15px;
+  margin: 0px 10px;
+  margin-top: 10px;
   text-decoration: none;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
 
   padding: 10px;
   color: #8a94ad;
@@ -52,12 +64,41 @@ const SidebarItem = styled.a`
   }
 `;
 
+const SidebarItem = ({ icon, text, route }) => {
+  const navigate = useNavigate();
+
+  return (
+    <SidebarHolder onClick={() => navigate(route)}>
+      <SidebarIcon src={icon} />
+      {text}
+    </SidebarHolder>
+  );
+
+}
+
+const FileUploadButton = () => {
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+  };
+
+  return <>
+    <input type="file" id="file" ref={useRef()} style={{ display: 'none' }} onChange={handleUpload} />
+    <SidebarHolder onClick={() => document.getElementById('file').click()}>
+      <SidebarIcon src={uploadIcon} />
+      Upload Transactions
+    </SidebarHolder>
+  </>;
+};
+
 const Sidebar = () => {
   return (
     <SidebarContainer className='border secondary-background' >
       <Nav>
-        <SidebarItem style={{ marginTop: '10px' }} as={Link} to="/home">Home</SidebarItem>
-        <SidebarItem as={Link} to="/recurring">Recurring Payments</SidebarItem>
+        <FileUploadButton />
+        <SidebarItem icon={homeIcon} text='Home' route='/home' />
+        <SidebarItem icon={spendingIcon} text='Spending Summary' route='/spending' />
+        <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
       </Nav>
     </SidebarContainer>
   );
