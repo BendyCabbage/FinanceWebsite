@@ -21,7 +21,7 @@ const CentredBackground = styled.div`
 export default function Home() {
   return (
     <CentredBackground>
-      <p style={{ color: 'white' }}>Please choose an option from the sidebar.</p>
+      <p style={{ color: 'white' }}>Upload your transactions to get started</p>
     </CentredBackground>
   );
 }

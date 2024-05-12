@@ -9,6 +9,7 @@ import homeIcon from '../icons/homeIcon.svg';
 import clockIcon from '../icons/clockIcon.svg';
 import uploadIcon from '../icons/uploadIcon.svg';
 import spendingIcon from '../icons/spendingIcon.svg';
+import listIcon from '../icons/listIcon.svg';
 
 export const sidebarWidth = 250;
 
@@ -22,6 +23,7 @@ const SidebarContainer = styled.div`
 
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -99,6 +101,7 @@ const Sidebar = () => {
         <SidebarItem icon={homeIcon} text='Home' route='/home' />
         <SidebarItem icon={spendingIcon} text='Spending Summary' route='/spending' />
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
+        <SidebarItem icon={listIcon} text='View All Transactions' route='/alltransactions' />
       </Nav>
     </SidebarContainer>
   );
