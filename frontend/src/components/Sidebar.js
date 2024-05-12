@@ -82,10 +82,35 @@ const FileUploadButton = () => {
   const handleUpload = (e) => {
     const file = e.target.files[0];
     console.log(file);
+
+    if (file) {
+      if (file.type === "text/csv") {
+        console.log("Processing CSV file:", file);
+        
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+      } else {
+        alert("Please upload a CSV file.");
+      }
+    }
   };
 
   return <>
-    <input type="file" id="file" ref={useRef()} style={{ display: 'none' }} onChange={handleUpload} />
+    <input type="file" id="file" ref={useRef()} style={{ display: 'none' }} onChange={handleUpload} accept=".csv, text/csv" />
     <SidebarHolder onClick={() => document.getElementById('file').click()}>
       <SidebarIcon src={uploadIcon} />
       Upload Transactions

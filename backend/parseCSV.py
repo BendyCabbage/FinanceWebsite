@@ -1,7 +1,8 @@
 
 import csv, re, os
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from datetime import date
+import json
 
 output_file = "summary.txt"
 transaction_output = "transactions.txt"
@@ -28,6 +29,19 @@ def main(transaction_filename):
     transaction_string = create_transactions_string(categories)
     write_to_file(transaction_string, trans_filename)
 
+def parse_file(file):
+    transactions = parse_csv(file)
+    return transactions_to_json(transactions)
+
+def transactions_to_json(transactions):
+    #return json.dumps([json.loads(tx.to_json()) for tx in transactions])
+    return json.dumps([to_json(i) for i in transactions])
+
+def to_json(self):
+    d = asdict(self)
+    d['date'] = self.date.isoformat()
+    return json.dumps(d)
+
 def get_basename(filename):
     basename = os.path.basename(filename)
     return basename.split(".")[0]
@@ -37,7 +51,7 @@ def parse_csv(csv_file):
         file = open(csv_file, "r")
     except:
         print(f"Invalid filename: {csv_file}")
-        exit(1)
+        return []
 
     csv_reader = csv.reader(file)
 
