@@ -18,11 +18,13 @@ const ContentContainer = styled.div`
 `;
 
 const App = () => {
+  const [transactions, setTransactions] = React.useState([]);
+
   return (
     <Router>
       <MainContainer>
         <Header />
-        <Sidebar />
+        <Sidebar setTransactions={setTransactions}/>
         <ContentContainer className='primary-background'>
           <Routes>
             <Route path="/" element={<Home />} />

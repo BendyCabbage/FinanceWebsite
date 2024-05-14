@@ -78,7 +78,7 @@ const SidebarItem = ({ icon, text, route }) => {
 
 }
 
-const FileUploadButton = () => {
+const FileUploadButton = ({ setTransactions }) => {
   const handleUpload = (e) => {
     const file = e.target.files[0];
     console.log(file);
@@ -98,6 +98,7 @@ const FileUploadButton = () => {
           .then(response => response.json())
           .then(data => {
             console.log(data);
+            setTransactions(data);
           })
           .catch(error => {
             console.error('Error:', error);
@@ -118,11 +119,11 @@ const FileUploadButton = () => {
   </>;
 };
 
-const Sidebar = () => {
+const Sidebar = ({ setTransactions }) => {
   return (
     <SidebarContainer className='border secondary-background' >
       <Nav>
-        <FileUploadButton />
+        <FileUploadButton setTransactions={setTransactions}/>
         <SidebarItem icon={homeIcon} text='Home' route='/home' />
         <SidebarItem icon={spendingIcon} text='Spending Summary' route='/spending' />
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />

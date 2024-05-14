@@ -30,6 +30,7 @@ def main(transaction_filename):
     write_to_file(transaction_string, trans_filename)
 
 def parse_file(file):
+    print(f"Parse File: {file}")
     transactions = parse_csv(file)
     return transactions_to_json(transactions)
 
@@ -48,7 +49,7 @@ def get_basename(filename):
 
 def parse_csv(csv_file):
     try:
-        file = open(csv_file, "r")
+        file = open(f"uploads/{csv_file}.csv", "r")
     except:
         print(f"Invalid filename: {csv_file}")
         return []
@@ -134,7 +135,7 @@ def format_transaction(transaction: Transaction):
 def format_name(name: str) ->str:
     name = re.sub(r'( [A-Z]{2})?( [A-Z]{3})?( Card xx\d{4})?( [A-Z]{3} \d+.\d+)? Value Date.*', r'', name) #Removes card references
     name = re.sub(r' ([A-Z]*\d+[A-Z]*)+ ', ' ', name) # Removes words containing only numbers or full caps + numbers
-    name = re.sub(r'TAP|PTY LTD)( |$)', '', name) #Removes PTY LTD and TAP
+    name = re.sub(r'(TAP|PTY LTD)( |$)', '', name) #Removes PTY LTD and TAP
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
     return name.strip()

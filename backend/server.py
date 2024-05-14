@@ -1,20 +1,31 @@
 from flask import Flask, request
+from flask_cors import CORS
+
 import parseCSV
+import random
+import string
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/upload', methods=['POST'])
-def parse_csv():
+def upload_csv():
+  print("Received POST /upload")
+  print(request.files)
   if 'file' not in request.files:
-      return "No file part"
+    return "No file part"
   
   file = request.files['file']
+  filename = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+  
   if file.filename == '':
-      return "No selected file"
-    
+    return "No selected file"
+  
   if file:
-      response = parseCSV.parse_file(file)
-      return response
+    file.save(f"uploads/{filename}.csv")
+    response = parseCSV.parse_file(filename)
+    print(f"Parsed CSV")
+    return response
 
   
 if __name__ == '__main__':
