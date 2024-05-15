@@ -6,6 +6,10 @@ import styled from 'styled-components';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Home from './components/Home';
+import ViewTransactions from './components/ViewTransactions';
+
+import { sidebarWidth } from './components/Sidebar';
+import { headerHeight } from './components/Header';
 
 const MainContainer = styled.div`
   width: 100vw;
@@ -13,8 +17,12 @@ const MainContainer = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  height: 100%;
-  width: 100%;
+  position: fixed;
+  top: ${headerHeight}px;
+  left: ${sidebarWidth}px;
+
+  width: calc(100% - ${sidebarWidth}px);
+  height: calc(100% - ${headerHeight}px);
 `;
 
 const App = () => {
@@ -24,11 +32,12 @@ const App = () => {
     <Router>
       <MainContainer>
         <Header />
-        <Sidebar setTransactions={setTransactions}/>
+        <Sidebar setTransactions={setTransactions} />
         <ContentContainer className='primary-background'>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/viewtransactions" element={<ViewTransactions transactions={transactions} />} />
           </Routes>
         </ContentContainer>
       </MainContainer>

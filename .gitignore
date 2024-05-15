@@ -1,2 +1,5 @@
 *.txt
 *.env
+
+backend/uploads/*
+backend/__pycache__/*

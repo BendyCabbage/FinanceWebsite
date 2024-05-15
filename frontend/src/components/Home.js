@@ -1,16 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { headerHeight } from './Header';
-import { sidebarWidth } from './Sidebar';
-
 const CentredBackground = styled.div`
-  position: fixed;
-  top: ${headerHeight}px;
-  left: ${sidebarWidth}px;
-
-  width: calc(100% - ${sidebarWidth}px);
-  height: calc(100% - ${headerHeight}px);
+  width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;

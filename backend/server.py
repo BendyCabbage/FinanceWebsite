@@ -10,8 +10,6 @@ CORS(app)
 
 @app.route('/upload', methods=['POST'])
 def upload_csv():
-  print("Received POST /upload")
-  print(request.files)
   if 'file' not in request.files:
     return "No file part"
   
@@ -24,7 +22,6 @@ def upload_csv():
   if file:
     file.save(f"uploads/{filename}.csv")
     response = parseCSV.parse_file(filename)
-    print(f"Parsed CSV")
     return response
 
   

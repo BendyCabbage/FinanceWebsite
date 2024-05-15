@@ -11,6 +11,8 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  z-index: 1;
 `;
 
 const Logo = styled.div`

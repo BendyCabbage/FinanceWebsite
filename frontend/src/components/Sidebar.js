@@ -25,6 +25,8 @@ const SidebarContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+
+  z-index: 1;
 `;
 
 const Nav = styled.nav`
@@ -32,8 +34,6 @@ const Nav = styled.nav`
   flex-direction: row;
   flex-wrap:  wrap;
   align-items: center;
-
-  overflow-y: scroll;
 `;
 
 const SidebarIcon = styled.img`
@@ -127,7 +127,7 @@ const Sidebar = ({ setTransactions }) => {
         <SidebarItem icon={homeIcon} text='Home' route='/home' />
         <SidebarItem icon={spendingIcon} text='Spending Summary' route='/spending' />
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
-        <SidebarItem icon={listIcon} text='View All Transactions' route='/alltransactions' />
+        <SidebarItem icon={listIcon} text='View All Transactions' route='/viewtransactions' />
       </Nav>
     </SidebarContainer>
   );

@@ -30,9 +30,8 @@ def main(transaction_filename):
     write_to_file(transaction_string, trans_filename)
 
 def parse_file(file):
-    print(f"Parse File: {file}")
     transactions = parse_csv(file)
-    return transactions_to_json(transactions)
+    return transactions
 
 def transactions_to_json(transactions):
     #return json.dumps([json.loads(tx.to_json()) for tx in transactions])
@@ -70,11 +69,12 @@ def parse_csv(csv_file):
 
         transactions.append(new_transaction)
 
+    os.remove(f"uploads/{csv_file}.csv")
     return transactions
 
 def parse_date(date_string: str) -> date:
     day, month, year = date_string.split("/")
-    return date(int(year), int(month), int(day))
+    return date(int(year), int(month), int(day)).isoformat()
 
 def categorise_transactions(transactions):
     categories = {"utilities": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": []}
@@ -135,7 +135,8 @@ def format_transaction(transaction: Transaction):
 def format_name(name: str) ->str:
     name = re.sub(r'( [A-Z]{2})?( [A-Z]{3})?( Card xx\d{4})?( [A-Z]{3} \d+.\d+)? Value Date.*', r'', name) #Removes card references
     name = re.sub(r' ([A-Z]*\d+[A-Z]*)+ ', ' ', name) # Removes words containing only numbers or full caps + numbers
-    name = re.sub(r'(TAP|PTY LTD)( |$)', '', name) #Removes PTY LTD and TAP
+    name = re.sub(r'(TAP|PTY LTD|Direct Debit|Direct Credit)( |$)', '', name) #Removes PTY LTD and TAP
+    name = re.sub(r'(^| )[0-9]+( |$)', ' ', name) #Removes all words with only numbers
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
     return name.strip()
