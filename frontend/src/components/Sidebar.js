@@ -125,7 +125,7 @@ const Sidebar = ({ setTransactions }) => {
       <Nav>
         <FileUploadButton setTransactions={setTransactions}/>
         <SidebarItem icon={homeIcon} text='Home' route='/home' />
-        <SidebarItem icon={spendingIcon} text='Spending Summary' route='/spending' />
+        <SidebarItem icon={spendingIcon} text='Spending Summary' route='/summary' />
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
         <SidebarItem icon={listIcon} text='View All Transactions' route='/viewtransactions' />
       </Nav>

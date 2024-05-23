@@ -1,5 +1,7 @@
 *.txt
 *.env
+*.csv
 
-backend/uploads/*
+backend/uploads
 backend/__pycache__/*
+backend/examples

@@ -10,6 +10,8 @@ import ViewTransactions from './components/ViewTransactions';
 
 import { sidebarWidth } from './components/Sidebar';
 import { headerHeight } from './components/Header';
+import RecurringTransactions from './components/RecurringTransactions';
+import Summary from './components/Summary';
 
 const MainContainer = styled.div`
   width: 100vw;
@@ -38,6 +40,8 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/viewtransactions" element={<ViewTransactions transactions={transactions} />} />
+            <Route path="/recurring" element={<RecurringTransactions transactions={transactions} />} />
+            <Route path="/summary" element={<Summary transactions={transactions} />} />
           </Routes>
         </ContentContainer>
       </MainContainer>

@@ -3,6 +3,13 @@
   margin: 0px;
 }
 
+td {
+  box-sizing: content-box;
+  height: 40px;
+  max-height: 42px;
+  overflow: hidden;
+}
+
 .primary-text {
   color: #eff2f6;
 }

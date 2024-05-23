@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import updownarrow from "../icons/updownarrow.svg";
+import Transaction from "./Transaction";
+import Home from "./Home";
 
 const CentredBackground = styled.div`
   width: calc(100% - 20px);
@@ -37,26 +39,36 @@ const SearchBar = styled.input`
   }
 `;
 
-const SearchTransactionsBox = () => {
+const SearchTransactionsBox = ({ transactions, setVisibleTransactions }) => {
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (searchTerm.length > 0) {
+      const visibleTransactions = transactions.filter((transaction) => {
+        return transaction.transaction_name.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+      setVisibleTransactions(visibleTransactions);
+    } else {
+      setVisibleTransactions(transactions);
+    }
+  }, [searchTerm, transactions, setVisibleTransactions]);
 
   return (
     <SearchBar value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="primary-text secondary-background border" placeholder="Search Transactions" type="search"></SearchBar>
   );
 };
 
-const Heading = () => {
+const Heading = ({ text, transactions, setVisibleTransactions }) => {
   return (
     <HeadingBox>
-      <h1 style={{margin: '10px'}} className="primary-text">Transactions</h1>
-      <SearchTransactionsBox />
+      <h1 style={{margin: '10px'}} className="primary-text">{text}</h1>
+      <SearchTransactionsBox transactions={transactions} setVisibleTransactions={setVisibleTransactions} />
     </HeadingBox>
   );
 };
 
 const TransactionTable = styled.table`
   width: 100%;
-  height: 100%;
 `;
 
 const TransactionTableHead = styled.thead`
@@ -66,6 +78,15 @@ const TransactionTableHead = styled.thead`
 
 const TableHeadStyle = styled.th`
   padding: 0px;
+  align-items: center;
+`;
+
+const TableHeadItemsHolder = styled.div`
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
 `;
 
 const HeaderIcon = styled.img`
@@ -74,24 +95,65 @@ const HeaderIcon = styled.img`
   width: 20px;
   height: 20px;
   margin-right: 10px;
-`;
+  cursor: pointer;
+  `;
 
-const TableHeadEntry = ({ text }) => {
+const TableHeadEntry = ({ text, handleClick }) => {
   return (
     <TableHeadStyle>
-      <HeaderIcon src={updownarrow}/>
-      {text}
+      <TableHeadItemsHolder>
+        <HeaderIcon src={updownarrow} onClick={handleClick} />
+        <p>{text}</p>
+      </TableHeadItemsHolder>
     </TableHeadStyle>
   );
 };
 
-const TableHead = () => {
+const TableHead = ({ visibleTransactions, setVisibleTransactions }) => {
+  const [sortDateOrder, setDateSortOrder] = useState(0);
+  const [sortAmountOrder, setAmountSortOrder] = useState(0);
+  const [sortNameOrder, setNameSortOrder] = useState(0);
+
+  function sortByDate() {
+    const sortingOrder = sortDateOrder !== 1 ? 1 : -1;
+    console.log("Sort by date, order: " + sortingOrder);
+    setDateSortOrder(sortingOrder);
+    setAmountSortOrder(0);
+    setNameSortOrder(0);
+
+    const newTransactions = visibleTransactions.sort((a, b) => sortDateOrder * (new Date(b.date) - new Date(a.date))).slice();
+    setVisibleTransactions(newTransactions);
+  }
+
+  function sortByAmount() {
+    const sortingOrder = sortAmountOrder !== 1 ? 1 : -1;
+    console.log("Sort by amount, order: " + sortingOrder);
+    setDateSortOrder(0);
+    setAmountSortOrder(sortingOrder);
+    setNameSortOrder(0);
+
+    const newTransactions = visibleTransactions.sort((a, b) => sortingOrder * (parseFloat(b.amount) - parseFloat(a.amount))).slice();
+    setVisibleTransactions(newTransactions);
+  }
+
+  function sortByName() {
+    const sortingOrder = sortNameOrder !== 1 ? 1 : -1;
+    console.log("Sort by name, order: " + sortingOrder);
+
+
+    const newTransactions = visibleTransactions.sort((a, b) => sortingOrder * a.transaction_name.localeCompare(b.transaction_name)).slice();
+    setVisibleTransactions(newTransactions);
+    setDateSortOrder(0);
+    setAmountSortOrder(0);
+    setNameSortOrder(sortingOrder);
+  }
+
   return (
     <TransactionTableHead>
       <tr className="secondary-background primary-text">
-        <TableHeadEntry text="Date"/>
-        <TableHeadEntry text="Amount"/>
-        <TableHeadEntry text="Description"/>
+        <TableHeadEntry text="Date" handleClick={sortByDate} />
+        <TableHeadEntry text="Amount" handleClick={sortByAmount} />
+        <TableHeadEntry text="Description" handleClick={sortByName}/>
       </tr>
     </TransactionTableHead>
   );
@@ -102,53 +164,20 @@ const TransactionTableBody = styled.tbody`
   height: 100%;
   `;
 
-const TransactionRow = styled.tr`
-  width: 90%;
-  height: 40px;
+const ViewTransactions = ({ titleText = "Transactions", transactions }) => {
+  const [visibleTransactions, setVisibleTransactions] = useState(transactions);
 
-  align-text: center;
-  padding: 2px 5px;
+  if (!transactions || transactions.length === 0) {
+    console.log("No transactions");
+    return <Home />;
+  }
 
-  margin: 5px;
-  border-radius: 5px;
-
-  font-size: 20px;
-`;
-
-const TableData = styled.td`
-  padding-left: 10px;
-`;
-
-const Date = ({ date }) => {
-  return <TableData>{date}</TableData>
-};
-
-const Amount = ({ amount }) => {
-  return <TableData>{amount}</TableData>
-};
-
-const Description = ({ description }) => {
-  return <TableData>{description}</TableData>
-};
-
-
-const Transaction = ({ transaction }) => {
-  return (
-    <TransactionRow className="secondary-background primary-text">
-      <Date date={transaction.date} />
-      <Amount amount={transaction.amount} />
-      <Description description={transaction.transaction_name} />
-    </TransactionRow>
-  );
-};
-
-const ViewTransactions = ({ transactions }) => {
-  const TransactionComponents = transactions.map((t, index) => <Transaction transaction={t} key={index} />)
+  const TransactionComponents = visibleTransactions.map((t, index) => <Transaction transaction={t} key={index} />)
   return (
     <CentredBackground>
-      <Heading />
+      <Heading text={titleText} transactions={transactions} setVisibleTransactions={setVisibleTransactions} />
       <TransactionTable>
-        <TableHead />
+        <TableHead visibleTransactions={visibleTransactions} setVisibleTransactions={setVisibleTransactions} />
         <TransactionTableBody>
           {TransactionComponents}
         </TransactionTableBody>

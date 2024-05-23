@@ -139,6 +139,8 @@ def format_name(name: str) ->str:
     name = re.sub(r'(^| )[0-9]+( |$)', ' ', name) #Removes all words with only numbers
 
     name = re.sub(r'( ){2,}', ' ', name) #Removes duplicated spaces
+    name = re.sub(r'\S*\d+\S*', '', name) #Removes all words containing numbers
+    
     return name.strip()
 
 def create_summary(categories) -> str:
