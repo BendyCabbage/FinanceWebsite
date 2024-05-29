@@ -1,19 +1,11 @@
-
 import csv, re, os
-from dataclasses import dataclass, asdict
 from datetime import date
-import json
+from categoriseTransactions import categorise_transactions
+from createSummary import create_summary
+from transaction import Transaction
 
 output_file = "summary.txt"
 transaction_output = "transactions.txt"
-
-@dataclass
-class Transaction:
-    date: date
-    amount: float
-    transaction_name: str
-    balance: float
-
 
 def main(transaction_filename):
     transactions = parse_csv(transaction_filename)
@@ -22,25 +14,11 @@ def main(transaction_filename):
     summary = create_summary(categories)
 
     summary_filename = "summary_" + get_basename(transaction_filename) + ".txt"
-    trans_filename = "transactions_" + get_basename(transaction_filename) + ".txt"
-
     write_to_file(summary, summary_filename)
-
-    transaction_string = create_transactions_string(categories)
-    write_to_file(transaction_string, trans_filename)
 
 def parse_file(file):
     transactions = parse_csv(file)
     return transactions
-
-def transactions_to_json(transactions):
-    #return json.dumps([json.loads(tx.to_json()) for tx in transactions])
-    return json.dumps([to_json(i) for i in transactions])
-
-def to_json(self):
-    d = asdict(self)
-    d['date'] = self.date.isoformat()
-    return json.dumps(d)
 
 def get_basename(filename):
     basename = os.path.basename(filename)
@@ -69,60 +47,11 @@ def parse_csv(csv_file):
 
         transactions.append(new_transaction)
 
-    os.remove(f"uploads/{csv_file}.csv")
     return transactions
 
 def parse_date(date_string: str) -> date:
     day, month, year = date_string.split("/")
-    return date(int(year), int(month), int(day)).isoformat()
-
-def categorise_transactions(transactions):
-    categories = {"utilities": [], "transport": [], "groceries": [], "rent": [], "income": [], "eating out": [], "miscellaneous": []}
-
-    for i in transactions:
-        if is_income(i):
-            categories["income"].append(i)
-        elif is_transport(i):
-            categories["transport"].append(i)
-        elif is_groceries(i):
-            categories["groceries"].append(i)
-        elif is_utilities(i):
-            categories["utilities"].append(i)
-        elif is_rent(i):
-            categories["rent"].append(i)
-        elif is_eating_out(i):
-            categories["eating out"].append(i)
-        else:
-            categories["miscellaneous"].append(i)
-    return categories
-
-def is_utilities(transaction: Transaction) -> bool:
-    keywords = ["gym", "desrenford", "spotify", "circles.life", "unsw village"]
-    return is_matching(keywords, transaction)
-
-def is_groceries(transaction: Transaction) -> bool:
-    keywords = ["iga", "woolworths", "coles", "aldi"]
-    return is_matching(keywords, transaction)
-
-def is_income(transaction: Transaction) -> bool:
-    return transaction.amount > 0
-
-def is_eating_out(transaction: Transaction) -> bool:
-    keywords = ["zambrero", "mcdonalds", "dominos", "guzman", "cafe", "burger", "boost", "mad mex", "subway", "kfc",
-                "sharetea", "chatime", "jamaica blue", "rivareno", "krispy kreme", "food, hungry jacks"]
-    return is_matching(keywords, transaction)
-
-def is_transport(transaction: Transaction) -> bool:
-    keywords = ["transport"]
-    return is_matching(keywords, transaction)
-
-def is_rent(transaction: Transaction) -> bool:
-    keywords = ["unsw randwick"]
-    return transaction.amount < -150 and is_matching(keywords, transaction)
-
-def is_matching(keywords: list, transaction: Transaction) -> bool:
-    re_pattern = "|".join(map(re.escape, keywords))
-    return re.search(re_pattern, transaction.transaction_name, re.IGNORECASE) is not None
+    return date(int(year), int(month), int(day))
 
 def format_transaction(transaction: Transaction):
     date_match = re.search(r'([0-9]{2}/[0-9]{2}/[0-9]{4})$', transaction.transaction_name)
@@ -142,37 +71,6 @@ def format_name(name: str) ->str:
     name = re.sub(r'\S*\d+\S*', '', name) #Removes all words containing numbers
     
     return name.strip()
-
-def create_summary(categories) -> str:
-    summary_string = ""
-
-    total_profit_loss = 0
-    min_date = date(2999, 12, 30)
-    max_date = date(1901, 1, 1)
-
-    for category in categories:
-        if len(categories[category]) == 0:
-            continue
-        summary_string += category + ":\n"
-        category_sum = round(sum([i.amount for i in categories[category]]),2)
-
-        start_date = min([i.date for i in categories[category]])
-        end_date = max([i.date for i in categories[category]])
-
-        min_date = min(start_date, min_date)
-        max_date = max(end_date, max_date)
-
-        total_profit_loss += category_sum
-
-        num_transactions = len(categories[category])
-        summary_string += f"\t{format_amount(category_sum)}\n"
-
-        summary_string += f"\tNumber of Transactions: {num_transactions}\n\n"
-    start_summary = f"Summary:\nPeriod: {date_to_str(min_date)} - {date_to_str(max_date)}\nTotal profit/loss: {format_amount(total_profit_loss)}\n"
-    summary_string = start_summary + summary_string
-
-
-    return summary_string
 
 def format_amount(amount):
     amount = round(amount, 2)

@@ -29,19 +29,21 @@ const ContentContainer = styled.div`
 
 const App = () => {
   const [transactions, setTransactions] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const [summary, setSummary] = React.useState(null);
 
   return (
     <Router>
       <MainContainer>
         <Header />
-        <Sidebar setTransactions={setTransactions} />
+        <Sidebar setTransactions={setTransactions} setCategories={setCategories} setSummary={setSummary} />
         <ContentContainer className='primary-background'>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/viewtransactions" element={<ViewTransactions transactions={transactions} />} />
             <Route path="/recurring" element={<RecurringTransactions transactions={transactions} />} />
-            <Route path="/summary" element={<Summary transactions={transactions} />} />
+            <Route path="/summary" element={<Summary transactions={transactions} summary={summary} categories={categories}/>} />
           </Routes>
         </ContentContainer>
       </MainContainer>

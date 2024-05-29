@@ -12,6 +12,7 @@ import spendingIcon from '../icons/spendingIcon.svg';
 import listIcon from '../icons/listIcon.svg';
 
 export const sidebarWidth = 250;
+export const backendURL = 'http://localhost:5000';
 
 const SidebarContainer = styled.div`
   position: fixed;
@@ -78,7 +79,7 @@ const SidebarItem = ({ icon, text, route }) => {
 
 }
 
-const FileUploadButton = ({ setTransactions }) => {
+const FileUploadButton = ({ setTransactions, setCategories, setSummary }) => {
   const handleUpload = (e) => {
     const file = e.target.files[0];
     console.log(file);
@@ -91,17 +92,29 @@ const FileUploadButton = ({ setTransactions }) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('http://localhost:5000/upload', {
+        fetch(backendURL + '/upload', {
           method: 'POST',
-          body: formData
+          body: formData,
+          credentials: 'include'
         })
           .then(response => response.json())
           .then(data => {
             console.log(data);
-            setTransactions(data);
+            setTransactions(data.transactions);
+
+            fetch(backendURL + '/summary', { credentials: 'include' }).then(response => response.json())
+            .then(data => {
+              console.log(data);
+              setSummary(data.summary);
+              setCategories(data.categories);
+            }).catch(error => {
+              console.error('Error:', error);
+              return;
+            });
           })
           .catch(error => {
             console.error('Error:', error);
+            return;
           });
 
       } else {
@@ -119,11 +132,11 @@ const FileUploadButton = ({ setTransactions }) => {
   </>;
 };
 
-const Sidebar = ({ setTransactions }) => {
+const Sidebar = ({ setTransactions, setCategories, setSummary }) => {
   return (
     <SidebarContainer className='border secondary-background' >
       <Nav>
-        <FileUploadButton setTransactions={setTransactions}/>
+        <FileUploadButton setTransactions={setTransactions} setCategories={setCategories} setSummary={setSummary} />
         <SidebarItem icon={homeIcon} text='Home' route='/home' />
         <SidebarItem icon={spendingIcon} text='Spending Summary' route='/summary' />
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
