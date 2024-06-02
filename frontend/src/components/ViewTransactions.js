@@ -164,10 +164,10 @@ const TransactionTableBody = styled.tbody`
   height: 100%;
   `;
 
-const ViewTransactions = ({ titleText = "Transactions", transactions }) => {
+const ViewTransactions = ({ titleText = "Transactions", transactions, defaultDisplay = false }) => {
   const [visibleTransactions, setVisibleTransactions] = useState(transactions);
 
-  if (!transactions || transactions.length === 0) {
+  if (defaultDisplay && (!transactions || transactions.length === 0)) {
     console.log("No transactions");
     return <Home />;
   }

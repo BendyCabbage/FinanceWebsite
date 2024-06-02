@@ -5,6 +5,8 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import classification_report
 
+categories = ["utilities", "transport", "entertainment", "health", "groceries", "income", "eating out", "miscellaneous"]
+
 # Example data
 data = {
     'transaction_name': ['Paid electricity bill', 'Bought ticket for bus', 'Movie night payment', 'Pharmacy visit payment'],

@@ -1,17 +1,19 @@
 from datetime import date
 
-def create_summary(categories) -> str:
-    summary_string = ""
-
+def create_summary(categories) -> dict:
+    summary = {
+      'categories': {},
+    }
+    
     total_profit_loss = 0
-    min_date = date(2999, 12, 30)
-    max_date = date(1901, 1, 1)
+    min_date = date(9999, 12, 30)
+    max_date = date(1001, 1, 1)
 
     for category in categories:
         if len(categories[category]) == 0:
             continue
-        summary_string += category + ":\n"
         category_sum = round(sum([i.amount for i in categories[category]]),2)
+        num_transactions = len(categories[category])
 
         start_date = min([i.date for i in categories[category]])
         end_date = max([i.date for i in categories[category]])
@@ -21,21 +23,15 @@ def create_summary(categories) -> str:
 
         total_profit_loss += category_sum
 
-        num_transactions = len(categories[category])
-        summary_string += f"\t{format_amount(category_sum)}\n"
+        summary['categories'][category] = {
+            'startDate': start_date,
+            'endDate': end_date,
+            'cashflow': category_sum,
+            'numTransactions': num_transactions
+        }
 
-        summary_string += f"\tNumber of Transactions: {num_transactions}\n\n"
-    start_summary = f"Summary:\nPeriod: {date_to_str(min_date)} - {date_to_str(max_date)}\nTotal profit/loss: {format_amount(total_profit_loss)}\n"
-    summary_string = start_summary + summary_string
+    summary['startDate'] = min_date
+    summary['endDate'] = max_date
+    summary['cashflow'] = total_profit_loss
 
-    return summary_string
-
-def format_amount(amount):
-    amount = round(amount, 2)
-    if amount < 0:
-        return  f"-${-amount}"
-    else:
-        return f"${amount}"
-
-def date_to_str(date: date) -> str:
-    return f"{date.day}/{date.month}/{date.year}"
+    return summary

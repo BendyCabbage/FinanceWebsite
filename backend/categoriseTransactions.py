@@ -2,25 +2,25 @@ from transaction import Transaction
 import re
 
 def categorise_transactions(transactions):
-    categories = {"utilities": [], "transport": [], "entertainment": [], "health": [], "groceries": [], "income": [], "eating out": [], "miscellaneous": []}
+    categories = {"Utilities": [], "Transport": [], "Entertainment": [], "Health": [], "Groceries": [], "Income": [], "Eating Out": [], "Miscellaneous": []}
 
     for i in transactions:
         if is_income(i):
-            categories["income"].append(i)
+            categories["Income"].append(i)
         elif is_transport(i):
-            categories["transport"].append(i)
+            categories["Transport"].append(i)
         elif is_entertainment(i):
-            categories["entertainment"].append(i)
+            categories["Entertainment"].append(i)
         elif is_health(i):
-            categories["health"].append(i)
+            categories["Health"].append(i)
         elif is_groceries(i):
-            categories["groceries"].append(i)
+            categories["Groceries"].append(i)
         elif is_utilities(i):
-            categories["utilities"].append(i)
+            categories["Utilities"].append(i)
         elif is_eating_out(i):
-            categories["eating out"].append(i)
+            categories["Eating Out"].append(i)
         else:
-            categories["miscellaneous"].append(i)
+            categories["Miscellaneous"].append(i)
     return categories
 
 def is_utilities(transaction: Transaction) -> bool:

@@ -36,7 +36,6 @@ const Data = ({ data }) => {
   );
 };
 
-
 const Transaction = ({ transaction }) => {
   return (
     <TransactionRow className="secondary-background primary-text">
