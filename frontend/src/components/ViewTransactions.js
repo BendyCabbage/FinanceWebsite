@@ -9,7 +9,7 @@ const CentredBackground = styled.div`
   width: calc(100% - 20px);
   height: 100%;
 
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 0;
 
   padding: 10px;

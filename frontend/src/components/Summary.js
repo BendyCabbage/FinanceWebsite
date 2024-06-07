@@ -7,19 +7,20 @@ import upArrow from '../icons/upArrow.svg';
 import downArrow from '../icons/downArrow.svg';
 
 const SummaryContainer = styled.div`
-  overflow-y: scroll;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  overflow-y: scroll;
   padding: 20px 0px;
+
+  height: 100%;
+  overflow-y: auto;
 `;
 
 const CategoryBoxStyle = styled.div`
   display: flex;
-  width: ${props => (props.isExpanded ? '90%' : '45%')};
+  width: ${props => (props.isExpanded ? '93%' : '45%')};
   transition: width 0.3s ease-in-out;
   margin: 10px;
   padding: 10px;
@@ -27,7 +28,6 @@ const CategoryBoxStyle = styled.div`
   border-radius: 10px;
   flex-direction: column;
   flex-wrap: wrap;
-  overflow-y: scroll;
 `;
 
 const SummaryBoxStyle = styled.div`
@@ -39,7 +39,6 @@ const SummaryBoxStyle = styled.div`
   border-radius: 10px;
   flex-direction: column;
   flex-wrap: wrap;
-  overflow-y: scroll;
 `;
 
 const IconBox = styled.img`
