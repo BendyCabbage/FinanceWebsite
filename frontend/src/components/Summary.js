@@ -13,14 +13,17 @@ const SummaryContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px 0px;
+  margin-bottom: 50px;
 
-  height: 100%;
-  overflow-y: auto;
+  max-height: 100%;
+  overflow-y: scroll;
 `;
 
 const CategoryBoxStyle = styled.div`
   display: flex;
-  width: ${props => (props.isExpanded ? '93%' : '45%')};
+  flex-grow: 1;
+  max-width: 93%;
+  min-width: 42%;
   transition: width 0.3s ease-in-out;
   margin: 10px;
   padding: 10px;
@@ -39,6 +42,7 @@ const SummaryBoxStyle = styled.div`
   border-radius: 10px;
   flex-direction: column;
   flex-wrap: wrap;
+  margin-bottom: 35px;
 `;
 
 const IconBox = styled.img`
@@ -73,7 +77,7 @@ const CategoryBox = ({ name, category, summary }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <CategoryBoxStyle isExpanded={isExpanded}>
+    <CategoryBoxStyle>
       <h1 style={{ paddingBottom: '10px' }} className='primary-text'>{name}</h1>
       <CategorySummary summary={summary} />
       <CollapseIcon isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
@@ -98,10 +102,6 @@ const SummaryBox = ({ title, summary }) => {
 };
 
 const Summary = ({ categories, summary }) => {
-  console.log('In Summary component');
-  console.log(categories);
-  console.log(summary);
-
   if (!categories || categories.length === 0 || !summary) {
     return (<Home />);
   }
@@ -116,7 +116,7 @@ const Summary = ({ categories, summary }) => {
   return (
     <SummaryContainer>
       {boxes}
-      <SummaryBox title='Summary' summary={summary} />
+      <SummaryBox sx={{ marginBottom: '50px' }} title='Summary' summary={summary} />
     </SummaryContainer>
   );
 };

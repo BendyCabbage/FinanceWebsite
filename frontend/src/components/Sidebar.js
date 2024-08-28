@@ -12,7 +12,7 @@ import spendingIcon from '../icons/spendingIcon.svg';
 import listIcon from '../icons/listIcon.svg';
 
 export const sidebarWidth = 250;
-export const backendURL = 'http://localhost:5000';
+export const backendURL = 'http://127.0.0.1:5000';
 
 const SidebarContainer = styled.div`
   position: fixed;
@@ -82,13 +82,9 @@ const SidebarItem = ({ icon, text, route }) => {
 const FileUploadButton = ({ setTransactions, setCategories, setSummary }) => {
   const handleUpload = (e) => {
     const file = e.target.files[0];
-    console.log(file);
 
     if (file) {
       if (file.type === "text/csv") {
-        console.log("Processing CSV file:", file);
-        
-
         const formData = new FormData();
         formData.append('file', file);
 
@@ -99,22 +95,19 @@ const FileUploadButton = ({ setTransactions, setCategories, setSummary }) => {
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data);
             setTransactions(data.transactions);
 
-            fetch(backendURL + '/summary', { credentials: 'include' }).then(response => response.json())
+            fetch(backendURL + '/summary', { method: 'GET', credentials: 'include' }).then(response => response.json())
             .then(data => {
               console.log(data);
               setSummary(data.summary);
               setCategories(data.categories);
             }).catch(error => {
               console.error('Error:', error);
-              return;
             });
           })
           .catch(error => {
             console.error('Error:', error);
-            return;
           });
 
       } else {

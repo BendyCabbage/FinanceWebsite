@@ -43,7 +43,7 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/viewtransactions" element={<ViewTransactions transactions={transactions} />} />
             <Route path="/recurring" element={<RecurringTransactions transactions={transactions} />} />
-            <Route path="/summary" element={<Summary transactions={transactions} summary={summary} categories={categories}/>} />
+            <Route path="/summary" element={<Summary summary={summary} categories={categories}/>} />
           </Routes>
         </ContentContainer>
       </MainContainer>
