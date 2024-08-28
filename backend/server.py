@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from categoriseTransactions import categorise_transactions
 from createSummary import create_summary
 
@@ -10,20 +10,22 @@ import random
 import string
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins="http://localhost:3000")
 
 filenameMap = {}
 
 @app.route('/upload', methods=['POST'])
 def upload_csv():
+  print("/upload")
   if 'file' not in request.files:
-    return "No file part"
-  
+    return "No file part", 400
+
   file = request.files['file']
   return parse_uploaded_file(file)
 
 @app.route('/summary', methods=['GET'])
 def get_summary():
+  print("/summary")
   id = request.cookies.get('id')
   if not id:
     return "No cookie", 403
@@ -61,8 +63,7 @@ def parse_uploaded_file(file):
   print(f"Generated id: {id}")
 
   response = make_response({"transactions": transactions}, 200)
-  response.set_cookie('id', str(id), samesite='Strict')
-
+  response.set_cookie('id', str(id), samesite='None', secure=True)
   return response
 
 def generate_id(filename):
