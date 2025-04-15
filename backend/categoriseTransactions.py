@@ -29,7 +29,7 @@ def is_utilities(transaction: Transaction) -> bool:
     return is_matching(keywords, transaction)
 
 def is_entertainment(transaction: Transaction) -> bool:
-    keywords = ["netflix", "spotify", "disney", "hulu", "prime", "youtube", "gaming", "playstation", "xbox", "nintendo", "steam", "epic games", "origin", "ubisoft", "blizzard", "riot", "twitch", "discord", "patreon", "binge", "golf", "karting", "game", "jb hi fi", "billiards"]
+    keywords = ["netflix", "stan", "spotify", "disney", "hulu", "prime", "youtube", "gaming", "playstation", "xbox", "nintendo", "steam", "epic games", "origin", "ubisoft", "blizzard", "riot", "twitch", "discord", "patreon", "binge", "golf", "karting", "game", "jb hi fi", "billiards"]
     return is_matching(keywords, transaction)
 
 def is_health(transaction: Transaction) -> bool:

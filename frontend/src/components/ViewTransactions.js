@@ -87,6 +87,7 @@ const TableHeadItemsHolder = styled.div`
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
+  padding: 0px 10px;
 `;
 
 const HeaderIcon = styled.img`
@@ -116,7 +117,6 @@ const TableHead = ({ visibleTransactions, setVisibleTransactions }) => {
 
   function sortByDate() {
     const sortingOrder = sortDateOrder !== 1 ? 1 : -1;
-    console.log("Sort by date, order: " + sortingOrder);
     setDateSortOrder(sortingOrder);
     setAmountSortOrder(0);
     setNameSortOrder(0);

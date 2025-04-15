@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
 import { headerHeight } from './Header';
+import Settings from './Settings';
 
 // Icons
 import homeIcon from '../icons/homeIcon.svg';
@@ -135,6 +136,7 @@ const Sidebar = ({ setTransactions, setCategories, setSummary }) => {
         <SidebarItem icon={clockIcon} text='Recurring Payments' route='/recurring' />
         <SidebarItem icon={listIcon} text='View All Transactions' route='/viewtransactions' />
       </Nav>
+      <Settings />
     </SidebarContainer>
   );
 };

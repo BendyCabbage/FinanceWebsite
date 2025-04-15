@@ -10,7 +10,7 @@ import random
 import string
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins="http://localhost:3000")
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"], "supports_credentials": True}})
 
 filenameMap = {}
 

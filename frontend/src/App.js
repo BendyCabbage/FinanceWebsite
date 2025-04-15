@@ -39,8 +39,8 @@ const App = () => {
         <Sidebar setTransactions={setTransactions} setCategories={setCategories} setSummary={setSummary} />
         <ContentContainer className='primary-background'>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home transactions={transactions} />} />
+            <Route path="/home" element={<Home transactions={transactions} />} />
             <Route path="/viewtransactions" element={<ViewTransactions transactions={transactions} />} />
             <Route path="/recurring" element={<RecurringTransactions transactions={transactions} />} />
             <Route path="/summary" element={<Summary summary={summary} categories={categories}/>} />

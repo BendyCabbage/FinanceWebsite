@@ -5,3 +5,5 @@
 backend/uploads/*
 backend/__pycache__/*
 backend/examples/*
+
+secrets.env

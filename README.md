@@ -4,5 +4,6 @@ A simple website that displays, filters, sorts and analyses your financial trans
 **Getting setup:**
 1. Clone the repository
 2. CD into the frontend and `npm install`
-3. cd into the backend and run `python3 server.py`
-4. Back in the frontend, run `npm start`
+3. cd into the backend and run `pip install -r backend/requirements.txt`
+4. Then run `python3 server.py`
+5. Back in the frontend, run `npm start`
